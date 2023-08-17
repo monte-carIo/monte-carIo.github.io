@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: https://monte-cario.github.io/sitemap.xml
+Sitemap: http://monte-cario.github.io/sitemap.xml

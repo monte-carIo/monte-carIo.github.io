@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Linear Algebra on Monte Carlo</title>
-    <link>https://monte-cario.github.io/tags/linear-algebra/</link>
+    <link>http://monte-cario.github.io/tags/linear-algebra/</link>
     <description>Recent content in Linear Algebra on Monte Carlo</description>
     <image>
       <title>Monte Carlo</title>
-      <url>https://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/linear-algebra/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://monte-cario.github.io/tags/linear-algebra/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Moore-Penrose Pseudoinverse</title>
-      <link>https://monte-cario.github.io/posts/hello/</link>
+      <link>http://monte-cario.github.io/posts/hello/</link>
       <pubDate>Thu, 17 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://monte-cario.github.io/posts/hello/</guid>
+      <guid>http://monte-cario.github.io/posts/hello/</guid>
       <description>Pseudoinverse As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
 $$ \boldsymbol{Ax=y} $$
 If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:
