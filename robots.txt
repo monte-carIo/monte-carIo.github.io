@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: https://monte-cario.github.io/PaperMod/sitemap.xml
+Sitemap: https://monte-carIo.github.io/sitemap.xml
