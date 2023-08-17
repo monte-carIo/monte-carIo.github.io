@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Monte-Carlo</title>
-    <link>https://monte-cario.github.io/</link>
-    <description>Recent content on Monte-Carlo</description>
+    <title>Linear Algebra on Monte-Carlo</title>
+    <link>https://monte-cario.github.io/tags/linear-algebra/</link>
+    <description>Recent content in Linear Algebra on Monte-Carlo</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/linear-algebra/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Moore-Penrose Pseudoinverse</title>
       <link>https://monte-cario.github.io/blog/pseudoinverse/</link>
