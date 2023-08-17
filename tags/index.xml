@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on Monte Carlo</title>
-    <link>https://monte-carIo.github.io/PaperMod/tags/</link>
+    <link>https://monte-cario.github.io/tags/</link>
     <description>Recent content in Tags on Monte Carlo</description>
     <image>
       <title>Monte Carlo</title>
-      <url>https://monte-carIo.github.io/PaperMod/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://monte-carIo.github.io/PaperMod/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>https://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://monte-cario.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-carIo.github.io/PaperMod/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linear Algebra</title>
-      <link>https://monte-carIo.github.io/PaperMod/tags/linear-algebra/</link>
+      <link>https://monte-cario.github.io/tags/linear-algebra/</link>
       <pubDate>Thu, 17 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://monte-carIo.github.io/PaperMod/tags/linear-algebra/</guid>
+      <guid>https://monte-cario.github.io/tags/linear-algebra/</guid>
       <description></description>
     </item>
     
