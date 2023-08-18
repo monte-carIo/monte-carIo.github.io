@@ -5,7 +5,28 @@
     <link>https://monte-cario.github.io/blog/</link>
     <description>Recent content in Blogs on Monte-Carlo</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 18 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Concepts of Covariance, the Dirac Distribution and Empirical Distribution</title>
+      <link>https://monte-cario.github.io/blog/prob/</link>
+      <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://monte-cario.github.io/blog/prob/</guid>
+      <description>These things is what probability class didn&amp;rsquo;t teach me.
+Covariance Covariance is a statistical concept that measures the degree to which two random variables change together. In other words, it quantifies the relationship between two variables and indicates whether they tend to increase or decrease together. It is an important concept in understanding the joint behavior of variables and is widely used in statistics, probability theory, and data analysis:
+$$ Cov(f(x), g(y)) = E[(f(x) - E[f(x)])(g(y) - E[g(y)])] $$</description>
+    </item>
+    
+    <item>
+      <title>Information Theory</title>
+      <link>https://monte-cario.github.io/blog/infor/</link>
+      <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://monte-cario.github.io/blog/infor/</guid>
+      <description>Intuition The basic intuition behind information theory is that learning that an unlikely event has occurred is more informative than learning that a likely event has occurred. A message saying “the sun rose this morning” is so uninformative as to be unnecessary to send, but a message saying “there was a solar eclipse this morning” is very informative.
+Independent events should have additive information. For example, the information gained from the event that a tossed coin has come up as heads twice is double than the event a tossed coin has come up as heads once.</description>
+    </item>
+    
     <item>
       <title>The Moore-Penrose Pseudoinverse</title>
       <link>https://monte-cario.github.io/blog/pseudoinverse/</link>
