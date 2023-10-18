@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage"><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="/fav_1.jpg">
+
+  <title>
+   - Monte-Carlo
+  </title>
+  <meta name="description" content="Deep Learning Date: October 17, 2023 Description: Foundation of DL Status: Not started Tag: Learning
+Linear Algebra The Moore-Penrose Pseudoinverse As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
+$$ \boldsymbol{Ax=y} $$
+If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:" /><meta name="generator" content="Hugo 0.111.1"><link
+    rel="stylesheet"
+    href="https://monte-cario.github.io/css/styles.min.562fdced95adc3893866f9334be234cb59d158855bf58add020eae7ba3aa0abe.css"
+    integrity="sha256-Vi/c7ZWtw4k4ZvkzS+I0y1nRWIVb9YrdAg6ue6OqCr4="
+  />
+  
+  
+
+  <meta property="og:title" content="" />
+<meta property="og:description" content="Deep Learning Date: October 17, 2023 Description: Foundation of DL Status: Not started Tag: Learning
+Linear Algebra The Moore-Penrose Pseudoinverse As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
+$$ \boldsymbol{Ax=y} $$
+If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://monte-cario.github.io/blog/deep-learning-2784a20bb0664cb998863d2c1c703e18/" /><meta property="article:section" content="blog" />
+
+
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="Deep Learning Date: October 17, 2023 Description: Foundation of DL Status: Not started Tag: Learning
+Linear Algebra The Moore-Penrose Pseudoinverse As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
+$$ \boldsymbol{Ax=y} $$
+If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:"/>
+
+  <meta itemprop="name" content="">
+<meta itemprop="description" content="Deep Learning Date: October 17, 2023 Description: Foundation of DL Status: Not started Tag: Learning
+Linear Algebra The Moore-Penrose Pseudoinverse As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
+$$ \boldsymbol{Ax=y} $$
+If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:">
+
+<meta itemprop="wordCount" content="2460">
+<meta itemprop="keywords" content="" />
+
+  
+</head>
+<body class="dark:bg-gray-800 dark:text-white relative flex flex-col min-h-screen"><header class="container flex justify-between md:justify-between gap-4 flex-wrap p-6 mx-auto relative">
+  <a href="https://monte-cario.github.io/" class="capitalize font-extrabold text-2xl">
+    
+    <img src="/fav_1.jpg" alt="Monte-Carlo" class="h-8 max-w-full" />
+    
+  </a>
+  <button class="mobile-menu-button md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <line x1="4" y1="8" x2="20" y2="8" />
+      <line x1="4" y1="16" x2="20" y2="16" />
+    </svg>
+  </button>
+  <ul class="mobile-menu absolute z-10 px-6 pb-6 md:p-0 top-full left-0 w-full md:w-auto md:relative hidden md:flex flex-col md:flex-row items-end md:items-center gap-4 lg:gap-6 bg-white dark:bg-gray-800">
+
+    
+    <li><a href="/blog">Blog</a></li>
+    
+    <li><a href="/tags">Tags</a></li>
+    
+
+    
+
+    
+    <li class="grid place-items-center">
+      <span class="open-search inline-block cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="10" cy="10" r="7" />
+          <line x1="21" y1="21" x2="15" y2="15" />
+        </svg>
+      </span>
+    </li>
+    
+
+    
+  </ul>
+</header>
+<main class="flex-1">
+  
+  
+
+  
+
+  <article class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4">
+
+    <h1 class="text-2xl font-bold mb-2"></h1>
+    
+    <h5 class="text-sm flex items-center flex-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <rect x="4" y="5" width="16" height="16" rx="2" />
+        <line x1="16" y1="3" x2="16" y2="7" />
+        <line x1="8" y1="3" x2="8" y2="7" />
+        <line x1="4" y1="11" x2="20" y2="11" />
+        <rect x="8" y="15" width="2" height="2" />
+      </svg>
+      Posted on 
+  
+    January 1, 0001
+  
+
+
+      
+        &nbsp;&bull;&nbsp;
+      
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <circle cx="12" cy="12" r="9" />
+        <polyline points="12 7 12 12 15 15" />
+      </svg>
+      12&nbsp;minutes
+      &nbsp;&bull;
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <line x1="3" y1="6" x2="3" y2="19" />
+        <line x1="12" y1="6" x2="12" y2="19" />
+        <line x1="21" y1="6" x2="21" y2="19" />
+      </svg>
+      2460&nbsp;words
+      
+        
+      
+    </h5>
+    
+
+    <details id="TableOfContents" class="px-4 mt-4 bg-gray-100 dark:bg-gray-700 rounded toc">
+    <summary class="flex items-center font-bold py-2 px-4 cursor-pointer justify-between select-none text-black dark:text-white">
+      <span>Table of contents</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <polyline points="6 9 12 15 18 9"></polyline>
+     </svg>
+    </summary>
+
+    <ul class="mt-2 pb-4">
+        
+
+        
+        <li>
+        <a href="#deep-learning">Deep Learning</a>
+        
+
+        
+        </li><li>
+        <a href="#linear-algebra">Linear Algebra</a>
+        
+
+        
+        <ul>
+            <ul>
+            <li>
+        <a href="#the-moore-penrose-pseudoinverse">The Moore-Penrose Pseudoinverse</a>
+        
+
+        
+        </li><li>
+        <a href="#principal-components-analysis">Principal Components Analysis</a>
+        
+
+        
+        </li></ul>
+          <li>
+        <a href="#probability-and-information-theory">Probability and Information Theory</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#covariance">Covariance</a>
+        
+
+        
+        </li><li>
+        <a href="#the-dirac-distribution-and-empirical-distribution">The Dirac Distribution and Empirical Distribution</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#information-theory">Information Theory</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#numerical-computation">Numerical Computation</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#jacobian-and-hessian-matrices">Jacobian and Hessian Matrices</a>
+        
+
+        
+        </li><li>
+        <a href="#constrained-optimization">Constrained Optimization</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#machine-learning-basics">Machine Learning Basics</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#estimators-and-bias">Estimators and Bias</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#point-estimation">Point Estimation</a>
+        
+
+        
+        </li><li>
+        <a href="#bias">Bias</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#kernel-trick">Kernel trick</a>
+        
+
+        
+        </li><li>
+        <a href="#bayesian-statistics">Bayesian Statistics</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#maximum-a-posteriori-map-estimation">Maximum A Posteriori (MAP) Estimation</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#challenges-motivating-deep-learning">Challenges Motivating Deep Learning</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#cost-function">Cost function</a>
+        </li></ul>
+    </li></ul>
+    </li></ul>
+  </details>
+
+    <h1 id="deep-learning">Deep Learning</h1>
+<p>Date: October 17, 2023
+Description: Foundation of DL
+Status: Not started
+Tag: Learning</p>
+<h1 id="linear-algebra">Linear Algebra</h1>
+<h3 id="the-moore-penrose-pseudoinverse">The Moore-Penrose Pseudoinverse</h3>
+<p>As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:</p>
+<p>$$
+\boldsymbol{Ax=y}
+$$</p>
+<p>If the matrix $\boldsymbol{A}$ is invertible then the solution is $\boldsymbol{x = A^{-1}y}$. What if $\boldsymbol{A}$ is not invertible, we can define the pseudoinverse of A as:</p>
+<p>$$
+\boldsymbol{A^+ = \lim_{\delta\to 0}(A^{\top}A + \delta^2I)^{-1}A^{\top}}
+$$</p>
+<p>where $\boldsymbol{\delta}$ is added to prevent $\boldsymbol{A^{\top}A}$ reach zero and can be interpreted as regularization.</p>
+<p>In practice with <a href="https://machinelearningcoban.com/2017/06/07/svd/" target="_blank" rel="noopener">SVD</a>
+, $\boldsymbol{A = UDV^{\top}}$, assume matrix $\boldsymbol{A}$ is a non-zero matrix and matrix $\boldsymbol{D}$ is invertible, we can rewrite the above formula as:</p>
+<p>$$
+\begin{align*}A^+ &amp;= (A^{\top}A)^{-1}A^{\top}\
+&amp;=(VDU^{\top}UDV^{\top})^{-1}VDU^{\top}\
+&amp;=VD^{-2}V^{-1}VDU^{\top} \
+&amp;= VD^{-1}U^{\top}
+\end{align*}
+$$</p>
+<p>For general if matrix $\boldsymbol{D}$ is  not invertible, then it can be written as:</p>
+<p>$$
+\boldsymbol{A^+ = VD^+U^\top}
+$$</p>
+<p>where $\boldsymbol{U}$, $\boldsymbol{D}$ and $\boldsymbol{V}$ are the singular value decomposition of $\boldsymbol{A}$ and $\boldsymbol{D^+}$ can be obtained by taking the reciprocal of $\boldsymbol{D}$ non-zero elements, then taking the transpose of the resulting matrix.</p>
+<p>For example, give a matrix $\boldsymbol{A = \begin{bmatrix}
+1 &amp; 2 \
+3 &amp; 4 \
+5 &amp; 6
+\end{bmatrix}}$have the size 3x2. Then we can calculate the $\boldsymbol{A^+}$ as:</p>
+<p>$$
+\boldsymbol{A^+ = (A^{\top}A)^{-1}A^{\top}}\
+= \boldsymbol{(\begin{bmatrix}
+1 &amp; 2 \
+3 &amp; 4 \
+5 &amp; 6
+\end{bmatrix}^{\top}\begin{bmatrix}
+1 &amp; 2 \
+3 &amp; 4 \
+5 &amp; 6
+\end{bmatrix})^{-1}\begin{bmatrix}
+1 &amp; 2 \
+3 &amp; 4 \
+5 &amp; 6
+\end{bmatrix}^{\top}}\
+= \begin{bmatrix}
+-4/3 &amp; -1/3 &amp; 2/3\
+13/12 &amp; 1/3 &amp; -5/12 \
+\end{bmatrix}
+$$</p>
+<p>Or by the second way, with calculated $\boldsymbol{U}, \boldsymbol{D}$ (or usually denoted as $\boldsymbol{\Sigma}$) and $\boldsymbol{V}$ as:</p>
+<p><img src="Deep%20Learning%202784a20bb0664cb998863d2c1c703e18/image-removebg.png" alt="image-removebg.png"></p>
+<p>This will give the same result as the above method.</p>
+<h3 id="principal-components-analysis">Principal Components Analysis</h3>
+<h2 id="probability-and-information-theory">Probability and Information Theory</h2>
+<h3 id="covariance">Covariance</h3>
+<p>Covariance is a statistical concept that measures the degree to which two random variables change together. In other words, it quantifies the relationship between two variables and indicates whether they tend to increase or decrease together. It is an important concept in understanding the joint behavior of variables and is widely used in statistics, probability theory, and data analysis:</p>
+<p>$$
+Cov(f(x), g(y)) = E[(f(x) - E[f(x)])(g(y) - E[g(y)])]
+$$</p>
+<p>High absolute values of the covariance mean that the values change very much and are both far from their respective means at the same time.</p>
+<p>If the sign of the covariance is positive, then both variables tend to take on relatively high values simultaneously.</p>
+<p>If the sign of the covariance is negative, then one variable tends to take on a relatively high value at the times that the other takes on a relatively low value and vice versa.</p>
+<h3 id="the-dirac-distribution-and-empirical-distribution">The Dirac Distribution and Empirical Distribution</h3>
+<p>In practice, sometimes we want to determine the mass in probability distribution clusters around a single point. We can redefine a pdf to a function that is zero-valued everywhere except 0, yet integrates to 1, or we can say a Dirac delta function $\delta(x)$:</p>
+<p>$$
+p(x) = \delta(x-\mu)
+$$</p>
+<p>This Dirac delta function is a generalized function which is a kind of function that is defined in terms of its properties when integrated. Here is a schematic representation of the Dirac delta function by a line surmounted by an arrow.</p>
+<p><img src="Deep%20Learning%202784a20bb0664cb998863d2c1c703e18/Untitled.png" alt="Untitled"></p>
+<p>A common use of the Dirac delta distribution is as a component of an <strong>empirical distribution</strong> over continuous variables:</p>
+<p>$$
+\hat p(x) = \frac{1}{m}\sum_{i=1}^{m} \delta(x-x^{(i)})
+$$</p>
+<p>The intuition behind the above empirical probability distribution is that it&rsquo;s a discrete distribution, you assume that your variable can take only the values as observed in your sample, with probabilities equal to empirical probabilities. If your data is not discrete, then only the <a href="https://en.wikipedia.org/wiki/Empirical_distribution_function" target="_blank" rel="noopener">empirical distribution function</a>
+ makes sense as an approximation of the true distribution. This is why histograms and kernel density estimators were developed so that we can approximate the concinnous density function using empirical data.</p>
+<h2 id="information-theory">Information Theory</h2>
+<p>The basic intuition behind information theory is that learning that an unlikely event has occurred is more informative than learning that a likely event has occurred. A message saying “the sun rose this morning” is so uninformative as to be unnecessary to send, but a message saying “there was a solar eclipse this morning” is very informative.</p>
+<p>Independent events should have additive information. For example, the information gained from the event that a tossed coin has come up as heads twice is double than the event a tossed coin has come up as heads once. From this, we define the <strong>self-information</strong> of an event x = x to be:</p>
+<p>$$
+I(x) = - logP(x)
+$$</p>
+<p>with the units of nats (one nat equal information gained by observing an event of probability $\frac{1}{e}$).</p>
+<p>If the variables are continuous, the same definition for it but some of the properties will be lost.</p>
+<p>For example, an event with unit density still has zero information, despite not being an event that is guaranteed to occur:</p>
+<ul>
+<li>
+<p>Unit density means $p(x)=1$, where $p(.)$ is a probability density function and $x$ is a continuous random variable.</p>
+</li>
+<li>
+<p>An event with unit density has zero information:</p>
+<p>$$
+\begin{align*}
+I(x) &amp;= -\log p(x) \
+&amp; = -\log 1\
+&amp; = 0
+\end{align*}
+$$</p>
+</li>
+<li>
+<p>In fact, it is an event that can be zero probability of occurring if the probability of a continuous random variable is equal to any specific value (rather than a continuous range of real values).</p>
+</li>
+</ul>
+<p>We can quantify the amount of uncertainty in an entire probability distribution using the <strong>Shannon entropy</strong> (or <strong>differential entropy</strong> when x is continuous):</p>
+<p>$$
+H(x) = E_{X \sim P}[I(x)]
+$$</p>
+<p><img src="Deep%20Learning%202784a20bb0664cb998863d2c1c703e18/Untitled%201.png" alt="Untitled"></p>
+<p>Distributions that are nearly deterministic (where the outcome is nearly certain) have low entropy, and distributions that are closer to uniform have high entropy.</p>
+<h1 id="numerical-computation">Numerical Computation</h1>
+<h2 id="jacobian-and-hessian-matrices">Jacobian and Hessian Matrices</h2>
+<p>The matrix containing all partial derivatives is known as a Jacobian matrix.</p>
+<p>If we have a function $f : \mathbb{R^m \rightarrow R^n}$, then the Jacobian matrix $J \in \mathbb{R^{m \times n}}$ is defined as:</p>
+<p>$$
+J_{i,j} = \frac{\partial f(x)_i}{\partial x_j}
+$$</p>
+<p>When our function has multiple input dimensions, there are many second derivatives. These derivatives can be collected together into a matrix called the Hessian matrix. The Hessian matrix $H(f)(x)$ is defined such that:</p>
+<p>$$
+H(f)(x)_{i,j} = \frac{\partial^2f(x)}{\partial x_i \partial x_j}
+$$</p>
+<p>Based on the Hessian matrix, we can make a second-order Taylor series approximation of $f(x)$ around $x^{(0)}$:</p>
+<p>$$
+f(x^{(0)} - \alpha g) \approx f(x^{(0)}) -\alpha g^\top g + \frac{1}{2}\alpha g^\top Hg
+$$</p>
+<p>where g is the gradient and $H$ is the Hessian at $x^{(0)}$ and $\alpha$  is the learning rate.</p>
+<p>Solving for the optimal step size that decreases the Taylor series approximation of the function the most yields give us:</p>
+<p>$$
+\alpha ^* = \frac{g^\top g}{g^\top Hg}
+$$</p>
+<p>In the worst case, when g aligns with the eigenvector of H corresponding to the maximal eigenvalue, then this optimal step size is given by $\frac{1}{\lambda_{\max}}$.</p>
+<h2 id="constrained-optimization">Constrained Optimization</h2>
+<p>The Karush-Kuhn-Tucker (KKT) provides a very general solution for optimization problems with constrained.</p>
+<p>First, let&rsquo;s take a look at the <strong>generalized Lagrange function</strong>:</p>
+<p>For a set S that defined:</p>
+<p>$$
+\mathbb{S}=\left{\boldsymbol{x} \mid \forall i, g^{(i)}(\boldsymbol{x})=0 \text { and } \forall j, h^{(j)}(\boldsymbol{x}) \leq 0\right}
+$$</p>
+<pre><code>              where $g^{(i)}(\boldsymbol{x})$ and $h^{(j)}(\boldsymbol{x})$ are the constraints. 
+</code></pre>
+<p>We have the <strong>generalized Lagrange function</strong> defined as:</p>
+<p>$$
+L(\boldsymbol{x}, \boldsymbol{\lambda}, \boldsymbol{\alpha})=f(\boldsymbol{x})+\sum_i \lambda_i g^{(i)}(\boldsymbol{x})+\sum_j \alpha_j h^{(j)}(\boldsymbol{x}) .
+$$</p>
+<pre><code>  where $\lambda_i$ and $\alpha_i$ are called the KKT multipliers.
+</code></pre>
+<p>To understand why we use the above function, let&rsquo;s take a look at the generalized Lagrange function when the constrained are satisfied:</p>
+<p>$$
+\max _{\boldsymbol{\lambda}} \max _{\boldsymbol{\alpha}, \boldsymbol{\alpha} \geq 0} L(\boldsymbol{x}, \boldsymbol{\lambda}, \boldsymbol{\alpha})=f(\boldsymbol{x})
+$$</p>
+<p>If the constraints are not satisfied the above equation will equal $\infin$.</p>
+<p>So we can see $\min_{\boldsymbol{x}} \max _{\boldsymbol{\lambda}} \max _{\boldsymbol{\alpha}, \boldsymbol{\alpha} \geq 0} L(\boldsymbol{x}, \boldsymbol{\lambda}, \boldsymbol{\alpha})$  and $\min _{\boldsymbol{x} \in \mathbb{S}} f(\boldsymbol{x})$ have the same optimal points $x$.</p>
+<p>These properties guarantee that no infeasible point can be optimal and that the optimum within the feasible points is unchanged.</p>
+<p>A simple set of properties describe the optimal points of constrained optimization problems. These properties are called the Karush-Kuhn-Tucker (KKT) conditions:</p>
+<ul>
+<li><strong>Stationarity:</strong> The gradient of the generalized Lagrangian is zero.</li>
+<li><strong>Primal feasibility:</strong> All constraints on both x and the KKT multipliers are satisfied.</li>
+<li><strong>Complementary slackness: $\sum_{i=1}^m \alpha_i h^{(i)}(\boldsymbol{x^*})$.</strong></li>
+</ul>
+<p><strong>Consider this problem</strong>:</p>
+<p>minimize $f(x,y) = -xy$</p>
+<p>subject to</p>
+<p>$x+2y =4 \
+x + y \leqslant 2$</p>
+<p>The generalized Lagrange function is written as:</p>
+<p>$$
+L(x,y,\lambda,\alpha) = -xy + \lambda(x+2y-4) + \alpha(x+y-2)
+$$</p>
+<p>Karush-Kuhn-Tucker (KKT) conditions can be written as:</p>
+<p>$$
+\begin{align*}
+-y + \lambda + \alpha &amp;= 0 \
+-x + 2\lambda + \alpha &amp;= 0 \
+\alpha(x+y-2) &amp;= 0\
+x +2y &amp;= 4
+\end{align*}
+$$</p>
+<p><strong>Case 1: $\alpha = 0$</strong></p>
+<p>$$
+\begin{align*}
+-y + \lambda &amp;= 0 \
+-x + 2\lambda &amp;= 0 \
+\alpha &amp;= 0\
+x +2y &amp;= 4
+\end{align*}
+$$</p>
+<p>This system equation has a solution $(x,y) = (2,1)$, this solution does not satisfy the constraint $x+y \le 2$, so this is not a valid solution.</p>
+<p><strong>Case 2: $x+y = 2$</strong></p>
+<p>$$
+\begin{align*}
+-y + \lambda + \alpha &amp;= 0 \
+-x + 2\lambda + \alpha &amp;= 0 \
+x+y-2 &amp;= 0\
+x +2y &amp;= 4
+\end{align*}
+$$</p>
+<p>This system equation has a solution $(x,y) = (0,2)$, this solution satisfies all constraints, so this is a valid solution.
+In conclusion, $\min f(x,y) = 0$ at $(x,y) = (0,2)$ subject to $x+2y =4$  and
+$x + y \leqslant 2$.</p>
+<h1 id="machine-learning-basics">Machine Learning Basics</h1>
+<h2 id="estimators-and-bias">Estimators and Bias</h2>
+<h3 id="point-estimation">Point Estimation</h3>
+<p>Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.</p>
+<p>We take the frequentist perspective on statistics. That is, we assume
+that the true parameter value $\theta$ is fixed but unknown, while the point estimate $\hat \theta$ is a function of the data.</p>
+<p>A point estimator or statistic is any function of the data:</p>
+<p>$$
+\boldsymbol{\hat\theta_m} = g(x^{(1)},&hellip;,x^{(m)})
+$$</p>
+<p>Where ${x^{(1)},&hellip;,x^{(m)}}$ is the set of i.i.d data points.
+This function all</p>
+<h3 id="bias">Bias</h3>
+<p>The bias of an estimator is defined as:</p>
+<p>$$
+bias(\hat\theta_m) = \mathbb{E}(\hat\theta_m) - \theta
+$$</p>
+<p>An estimator $\hat \theta$ is said to be unbiased if $bias(\hat\theta_m) = 0$.</p>
+<p>An estimator θˆm is said to be asymptotically unbiased if $\lim_{m\rightarrow \infin}bias(\hat\theta_m)=0$.
+Based on this, we can solve a question that many people wonder when studying probability and statistics. When we calculate the variance of a sample:</p>
+<p>$$
+\tilde\sigma^2_m = \frac{1}{m-1}\sum^{m}_{i=1}(x^{(i)}-\hat\mu_m)^2
+$$</p>
+<p>why is $\frac{1}{m-1}$ instead of $\frac{1}{m}$.</p>
+<p>$$
+\begin{align*}
+\mathbb{E}[\tilde\sigma^2_m] &amp;= \frac{1}{m-1}\mathbb{E}[\Sigma_i(x^{(i)}-\hat\mu_m)^2] \ &amp;= \frac{1}{m-1}\mathbb{E}[\Sigma_i(x^{(i)}-\mu)^2-m(\hat\mu_m-\mu)^2]\
+&amp;= \frac{1}{m-1}(m\sigma^2 - m\frac{\sigma^2}{m}) = \sigma^2
+\end{align*}
+$$</p>
+<p>This is called the unbiased sample variance estimator.</p>
+<h2 id="kernel-trick">Kernel trick</h2>
+<p>The &ldquo;kernel trick&rdquo; is a concept used in machine learning, specifically in the context of support vector machines (SVMs) and other algorithms that involve working with inner products or distances between data points in high-dimensional spaces. It allows you to implicitly map data into a higher-dimensional feature space without explicitly computing the coordinates of the data points in that space.
+For instance, the decision function $f(x)$ for a linear Support Vector Machine (SVM) can be represented as:</p>
+<p>$$
+f(x) = w^\top x+b = \sum_{i=1}^{m}\alpha_i x^\top x^{(i)} +b
+$$</p>
+<p>where $x^{(i)}$ is the training sample, and $\alpha$ is the coefficient vector, which is learned during the training process.
+If we replace $x$ with a function $\phi(x)$. Then we can rewrite as:</p>
+<p>$$
+f(x)= \sum_i \alpha_i k(x,x^{(i)})
+$$</p>
+<p>where $k(x,x^{(i)})= \phi(x)^\top\phi(x^{(i)})$ is called a <strong>kernel</strong>. In this formula, the relationship of $f(x)$ , and $x$ is non-linear but the relationship of $f(x)$ and $\phi(x)$ and $\alpha$ is linear.
+This gives us two advantages:</p>
+<ul>
+<li>Learning nonlinear as a function of $x$ using convex optimization techniques that are guaranteed to converge efficiently.</li>
+<li>The kernel gives more computational efficiency than naively constructing two $\phi(x)$ vectors and explicitly taking their dot product.</li>
+</ul>
+<p>An example of the reality of the kernel is the Gaussian kernel or RBF (radial basis function) $f(u,v) = N(u-v;0,\sigma^2I)$.</p>
+<h2 id="bayesian-statistics">Bayesian Statistics</h2>
+<p>Another approach instead of frequentist statistics is to consider all possible values of $\theta$ when making a prediction or we can call Bayesian statistics.</p>
+<h3 id="maximum-a-posteriori-map-estimation">Maximum A Posteriori (MAP) Estimation</h3>
+<p>Most principled approach is to make predictions using the full Bayesian posterior distribution over the parame<em>t</em>er $\theta$, it is still often desirable to have a single point estimate.  The MAP estimate chooses the point of maximal posterior probability (or maximal probability density in the more common case of continuous $\theta$):</p>
+<p>$$
+\theta_{MAP} = \argmax_{\theta}p(\theta|x) = \argmax_{\theta} \log p(x|\theta) + \log p(\theta)
+$$</p>
+<p>MAP approximation to Bayesian inference can be interpreted as regularization like weight decay (not all cases). For example if prior is$\boldsymbol{N}(w;0,\frac{1}\lambda I^2)$, then the $\log p(\theta) \propto \lambda w^Tw$.</p>
+<h2 id="challenges-motivating-deep-learning">Challenges Motivating Deep Learning</h2>
+<ul>
+<li>The Curse of Dimensionality: The number of possible distinct configurations of a set of variables increases exponentially as the number of variables increases.</li>
+<li>Local Constancy and Smoothness Regularization: the function we learn should not change very much within a small region. For example, K-nearest neighbors predictors are literally constant over each region containing all the points $x$ that have the same set of K-nearest neighbors in the training set.</li>
+<li>Manifold Learning: A manifold is a connected region. Mathematically, it is a set of points, associated with a neighborhood around each point. From any given point, the manifold locally appears to be a Euclidean space. In everyday life, we experience the surface of the world as a 2-D plane, but it is in fact a spherical manifold in 3-D space.</li>
+</ul>
+<h3 id="cost-function">Cost function</h3>
+<p>If normal then MSE.</p>
+<p>Specifying a model p(y | x) automatically determines a cost function log p(y | x).</p>
+<p>Unfortunately, mean squared error and mean absolute error often lead to poor
+results when used with gradient-based optimization. Some output units that
+saturate produce very small gradients when combined with these cost functions. This is one reason that the cross-entropy cost function is more popular than mean
+squared error or mean absolute error, even when it is not necessary to estimate an
+entire distribution p(y | x).</p>
+<p>Many objective functions other than the log-likelihood do not work as well
+with the softmax function. Specifically, objective functions that do not use a log to
+undo the exp of the softmax fail to learn when the argument to the exp becomes
+very negative, causing the gradient to vanish. In particular, squared error is a
+poor loss function for softmax units, and can fail to train the model to change its
+output, even when the model makes highly confident incorrect predictions (Bridle, 1990). To understand why these other loss functions can fail, we need to examine
+the softmax function itself.</p>
+<p>$$
+\begin{aligned}&amp; P(y)=\frac{\exp (y z)}{\sum_{y^{\prime}=0}^1 \exp \left(y^{\prime} z\right),} \&amp; P(y)=\sigma((2 y-1) z) .\end{aligned}
+$$</p>
+<p>continue at 7.1.1</p>
+
+  </article>
+<div class="px-2 mb-2">
+  
+  <script src="https://giscus.app/client.js"
+    data-repo=""
+    data-repo-id=""
+    data-category=""
+    data-category-id=""
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+  </script>
+  
+</div>
+<div class="bg-gray-200 dark:bg-gray-900">
+  <div class="container px-4 py-12 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+    <div>
+      <div class="text-2xl font-bold mb-2">Follow me</div>
+      <p class="opacity-60"></p>
+    </div>
+
+    <ul class="flex justify-center gap-x-3 flex-wrap gap-y-2">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://github.com/monte-carIo"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+            />
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://www.facebook.com/profile.php?id=100005815337178"
+          target="_blank"
+          rel="noopener"
+          aria-label="Facebook"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-facebook" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"></path>
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+    </ul>
+  </div>
+</div>
+
+    </main><footer class="container p-6 mx-auto flex justify-between items-center">
+  <span class="text-sm font-light">
+    
+    Copyright © 2023 - Do Pham Khai Nguyen · All rights reserved
+    
+  </span>
+  <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-1 cursor-pointer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5"
+      stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M18 15l-6 -6l-6 6h12" />
+    </svg>
+  </span>
+</footer>
+
+<div class="search-ui absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 hidden">
+  <div class="container max-w-3xl mx-auto p-12">
+    <div class="relative">
+      <div class="my-4 text-center text-2xl font-bold">Search</div>
+
+      <span class="p-2 absolute right-0 top-0 cursor-pointer close-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </span>
+    </div>
+
+    <input type="search" class="py-2 px-3 w-full dark:text-black border dark:border-transparent"
+      placeholder="Enter search query" />
+
+    <div class="search-results text-lg font-medium my-4 hidden">Results</div>
+    <ul class="search-list my-2">
+
+    </ul>
+
+    <div class="no-results text-center my-8 hidden">
+      <div class="text-xl font-semibold mb-2">No results found</div>
+      <p class="font-light text-sm">Try adjusting your search query</p>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script src="https://monte-cario.github.io/js/scripts.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  const mobileMenuButton = document.querySelector('.mobile-menu-button')
+  const mobileMenu = document.querySelector('.mobile-menu')
+  function toggleMenu() {
+    mobileMenu.classList.toggle('hidden');
+    mobileMenu.classList.toggle('flex');
+  }
+  if(mobileMenu && mobileMenuButton){
+    mobileMenuButton.addEventListener('click', toggleMenu)
+  }
+</script>
+</body>
+</html>

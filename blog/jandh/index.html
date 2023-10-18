@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage"><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="/fav_1.jpg">
+
+  <title>
+  Machine Learning Basics - Monte-Carlo
+  </title>
+  <meta name="description" content="Estimators and Bias Point Estimation Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.
+We take the frequentist perspective on statistics. That is, we assume that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data." />
+  <meta name="author" content="Monte Carlo" />
+  <meta name="generator" content="Hugo 0.111.1"><link
+    rel="stylesheet"
+    href="https://monte-cario.github.io/css/styles.min.562fdced95adc3893866f9334be234cb59d158855bf58add020eae7ba3aa0abe.css"
+    integrity="sha256-Vi/c7ZWtw4k4ZvkzS+I0y1nRWIVb9YrdAg6ue6OqCr4="
+  />
+  
+  
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
+      integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv"
+      crossorigin="anonymous"
+    >
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js"
+      integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O"
+      crossorigin="anonymous"
+    ></script>
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js"
+      integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script>
+  
+
+  <meta property="og:title" content="Machine Learning Basics" />
+<meta property="og:description" content="Estimators and Bias Point Estimation Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.
+We take the frequentist perspective on statistics. That is, we assume that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://monte-cario.github.io/blog/jandh/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2023-08-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-08-18T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Machine Learning Basics"/>
+<meta name="twitter:description" content="Estimators and Bias Point Estimation Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.
+We take the frequentist perspective on statistics. That is, we assume that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data."/>
+
+  <meta itemprop="name" content="Machine Learning Basics">
+<meta itemprop="description" content="Estimators and Bias Point Estimation Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.
+We take the frequentist perspective on statistics. That is, we assume that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data."><meta itemprop="datePublished" content="2023-08-18T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-08-18T00:00:00+00:00" />
+<meta itemprop="wordCount" content="685">
+<meta itemprop="keywords" content="ML Background," />
+
+  
+</head>
+<body class="dark:bg-gray-800 dark:text-white relative flex flex-col min-h-screen"><header class="container flex justify-between md:justify-between gap-4 flex-wrap p-6 mx-auto relative">
+  <a href="https://monte-cario.github.io/" class="capitalize font-extrabold text-2xl">
+    
+    <img src="/fav_1.jpg" alt="Monte-Carlo" class="h-8 max-w-full" />
+    
+  </a>
+  <button class="mobile-menu-button md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <line x1="4" y1="8" x2="20" y2="8" />
+      <line x1="4" y1="16" x2="20" y2="16" />
+    </svg>
+  </button>
+  <ul class="mobile-menu absolute z-10 px-6 pb-6 md:p-0 top-full left-0 w-full md:w-auto md:relative hidden md:flex flex-col md:flex-row items-end md:items-center gap-4 lg:gap-6 bg-white dark:bg-gray-800">
+
+    
+    <li><a href="/blog">Blog</a></li>
+    
+    <li><a href="/tags">Tags</a></li>
+    
+
+    
+
+    
+    <li class="grid place-items-center">
+      <span class="open-search inline-block cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="10" cy="10" r="7" />
+          <line x1="21" y1="21" x2="15" y2="15" />
+        </svg>
+      </span>
+    </li>
+    
+
+    
+  </ul>
+</header>
+<main class="flex-1">
+  
+  
+
+  
+  <div class="relative max-w-5xl mx-auto px-4">
+    <img src="/prob.png" class="rounded-lg shadow-sm w-full object-contain" />
+    
+    <div class="absolute top-4 right-8 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
+      
+  
+    August 18, 2023
+  
+
+
+    </div>
+    
+  </div>
+  
+
+  <article class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4">
+
+    <h1 class="text-2xl font-bold mb-2">Machine Learning Basics</h1>
+    
+    <h5 class="text-sm flex items-center flex-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <rect x="4" y="5" width="16" height="16" rx="2" />
+        <line x1="16" y1="3" x2="16" y2="7" />
+        <line x1="8" y1="3" x2="8" y2="7" />
+        <line x1="4" y1="11" x2="20" y2="11" />
+        <rect x="8" y="15" width="2" height="2" />
+      </svg>
+      Posted on 
+  
+    August 18, 2023
+  
+
+
+      
+        &nbsp;&bull;&nbsp;
+      
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <circle cx="12" cy="12" r="9" />
+        <polyline points="12 7 12 12 15 15" />
+      </svg>
+      4&nbsp;minutes
+      &nbsp;&bull;
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <line x1="3" y1="6" x2="3" y2="19" />
+        <line x1="12" y1="6" x2="12" y2="19" />
+        <line x1="21" y1="6" x2="21" y2="19" />
+      </svg>
+      685&nbsp;words
+      
+        
+      
+    </h5>
+    
+
+    <details id="TableOfContents" class="px-4 mt-4 bg-gray-100 dark:bg-gray-700 rounded toc">
+    <summary class="flex items-center font-bold py-2 px-4 cursor-pointer justify-between select-none text-black dark:text-white">
+      <span>Table of contents</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <polyline points="6 9 12 15 18 9"></polyline>
+     </svg>
+    </summary>
+
+    <ul class="mt-2 pb-4">
+        
+
+        
+        <li>
+        <a href="#estimators-and-bias">Estimators and Bias</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#point-estimation">Point Estimation</a>
+        
+
+        
+        </li><li>
+        <a href="#bias">Bias</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#kernel-trick">Kernel trick</a>
+        
+
+        
+        </li><li>
+        <a href="#bayesian-statistics">Bayesian Statistics</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#maximum-a-posteriori-map-estimation">Maximum A Posteriori (MAP) Estimation</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#challenges-motivating-deep-learning">Challenges Motivating Deep Learning</a>
+        </li></ul>
+  </details>
+
+    <h2 id="estimators-and-bias">Estimators and Bias</h2>
+<h3 id="point-estimation">Point Estimation</h3>
+<p>Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.</p>
+<p>We take the frequentist perspective on statistics. That is, we assume
+that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data.</p>
+<p>A point estimator or statistic is any function of the data:</p>
+<p>$$
+\boldsymbol{\hat\theta_m} = g(x^{(1)},&hellip;,x^{(m)})
+$$</p>
+<p>Where \({x^{(1)},&hellip;,x^{(m)}}\) is the set of i.i.d data points.
+This function all</p>
+<h3 id="bias">Bias</h3>
+<p>The bias of an estimator is defined as:</p>
+<p>$$
+bias(\hat\theta_m) = \mathbb{E}(\hat\theta_m) - \theta
+$$</p>
+<p>An estimator \(\hat \theta\) is said to be unbiased if \(bias(\hat\theta_m) = 0\).</p>
+<p>An estimator θˆm is said to be asymptotically unbiased if \(\lim_{m\rightarrow \infin}bias(\hat\theta_m)=0\).
+Based on this, we can solve a question that many people wonder when studying probability and statistics. When we calculate the variance of a sample:</p>
+<p>$$
+\tilde\sigma^2_m = \frac{1}{m-1}\sum^{m}_{i=1}(x^{(i)}-\hat\mu_m)^2
+$$</p>
+<p>why is \(\frac{1}{m-1}\) instead of \(\frac{1}{m}\).</p>
+<p>$$
+\mathbb{E}[\tilde\sigma^2_m] = \frac{1}{m-1}\mathbb{E}[\Sigma_i(x^{(i)}-\hat\mu_m)^2] \\ = \frac{1}{m-1}\mathbb{E}[\Sigma_i(x^{(i)}-\mu)^2-m(\hat\mu_m-\mu)^2]\\
+= \frac{1}{m-1}(m\sigma^2 - m\frac{\sigma^2}{m}) = \sigma^2
+$$</p>
+<p>This is called the unbiased sample variance estimator.</p>
+<h2 id="kernel-trick">Kernel trick</h2>
+<p>The &ldquo;kernel trick&rdquo; is a concept used in machine learning, specifically in the context of support vector machines (SVMs) and other algorithms that involve working with inner products or distances between data points in high-dimensional spaces. It allows you to implicitly map data into a higher-dimensional feature space without explicitly computing the coordinates of the data points in that space.
+For instance, the decision function \(f(x)\) for a linear Support Vector Machine (SVM) can be represented as:</p>
+<p>$$
+f(x) = w^\top x+b = \sum_{i=1}^{m}\alpha_i x^\top x^{(i)} +b
+$$</p>
+<p>where \(x^{(i)}\) is the training sample, and \(\alpha\) is the coefficient vector, which is learned during the training process.
+If we replace \(x\) with a function \(\phi(x)\). Then we can rewrite as:</p>
+<p>$$
+f(x)= \sum_i \alpha_i k(x,x^{(i)})
+$$</p>
+<p>where \(k(x,x^{(i)})= \phi(x)^\top\phi(x^{(i)})\) is called a <strong>kernel</strong>. In this formula, the relationship of \(f(x)\) , and \(x\) is non-linear but the relationship of \(f(x)\) and \(\phi(x)\) and \(\alpha\) is linear.
+This gives us two advantages:</p>
+<ul>
+<li>Learning nonlinear as a function of \(x\) using convex optimization techniques that are guaranteed to converge efficiently.</li>
+<li>The kernel gives more computational efficiency than naively constructing two \(\phi(x)\) vectors and explicitly taking their dot product.</li>
+</ul>
+<p>An example of the reality of the kernel is the Gaussian kernel or RBF (radial basis function) \(f(u,v) = N(u-v;0,\sigma^2I)\).</p>
+<h2 id="bayesian-statistics">Bayesian Statistics</h2>
+<p>Another approach instead of frequentist statistics is to consider all possible values of \(\theta\) when making a prediction or we can call Bayesian statistics.</p>
+<h3 id="maximum-a-posteriori-map-estimation">Maximum A Posteriori (MAP) Estimation</h3>
+<p>Most principled approach is to make predictions using the full Bayesian posterior distribution over the parame<em>t</em>er \(\theta\), it is still often desirable to have a single point estimate.  The MAP estimate chooses the point of maximal posterior probability (or maximal probability density in the more common case of continuous \(\theta\)):</p>
+<p>$$
+\theta_{MAP} = \underset{\theta}{\operatorname{arg max}}  {p}(\theta|x) \\ = \underset{\theta}{\operatorname{arg max}} \log p(x|\theta) + \log p(\theta)
+$$</p>
+<p>MAP approximation to Bayesian inference can be interpreted as regularization like weight decay (not all cases). For example if prior is\(\boldsymbol{N}(w;0,\frac{1}\lambda I^2)\), then the \(\log p(\theta) \propto \lambda w^Tw\).</p>
+<h2 id="challenges-motivating-deep-learning">Challenges Motivating Deep Learning</h2>
+<ul>
+<li>The Curse of Dimensionality: The number of possible distinct configurations of a set of variables increases exponentially as the number of variables increases.</li>
+<li>Local Constancy and Smoothness Regularization: the function we learn should not change very much within a small region. For example, K-nearest neighbors predictors are literally constant over each region containing all the points \(x\) that have the same set of K-nearest neighbors in the training set.</li>
+<li>Manifold Learning: A manifold is a connected region. Mathematically, it is a set of points, associated with a neighborhood around each point. From any given point, the manifold locally appears to be a Euclidean space. In everyday life, we experience the surface of the world as a 2-D plane, but it is in fact a spherical manifold in 3-D space.</li>
+</ul>
+
+  </article>
+<div class="px-2 mb-2">
+  
+  <script src="https://giscus.app/client.js"
+    data-repo=""
+    data-repo-id=""
+    data-category=""
+    data-category-id=""
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+  </script>
+  
+</div>
+<div class="bg-gray-200 dark:bg-gray-900">
+  <div class="container px-4 py-12 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+    <div>
+      <div class="text-2xl font-bold mb-2">Follow me</div>
+      <p class="opacity-60"></p>
+    </div>
+
+    <ul class="flex justify-center gap-x-3 flex-wrap gap-y-2">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://github.com/monte-carIo"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+            />
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://www.facebook.com/profile.php?id=100005815337178"
+          target="_blank"
+          rel="noopener"
+          aria-label="Facebook"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-facebook" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"></path>
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+    </ul>
+  </div>
+</div>
+
+    </main><footer class="container p-6 mx-auto flex justify-between items-center">
+  <span class="text-sm font-light">
+    
+    Copyright © 2023 - Do Pham Khai Nguyen · All rights reserved
+    
+  </span>
+  <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-1 cursor-pointer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5"
+      stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M18 15l-6 -6l-6 6h12" />
+    </svg>
+  </span>
+</footer>
+
+<div class="search-ui absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 hidden">
+  <div class="container max-w-3xl mx-auto p-12">
+    <div class="relative">
+      <div class="my-4 text-center text-2xl font-bold">Search</div>
+
+      <span class="p-2 absolute right-0 top-0 cursor-pointer close-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </span>
+    </div>
+
+    <input type="search" class="py-2 px-3 w-full dark:text-black border dark:border-transparent"
+      placeholder="Enter search query" />
+
+    <div class="search-results text-lg font-medium my-4 hidden">Results</div>
+    <ul class="search-list my-2">
+
+    </ul>
+
+    <div class="no-results text-center my-8 hidden">
+      <div class="text-xl font-semibold mb-2">No results found</div>
+      <p class="font-light text-sm">Try adjusting your search query</p>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script src="https://monte-cario.github.io/js/scripts.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  const mobileMenuButton = document.querySelector('.mobile-menu-button')
+  const mobileMenu = document.querySelector('.mobile-menu')
+  function toggleMenu() {
+    mobileMenu.classList.toggle('hidden');
+    mobileMenu.classList.toggle('flex');
+  }
+  if(mobileMenu && mobileMenuButton){
+    mobileMenuButton.addEventListener('click', toggleMenu)
+  }
+</script>
+</body>
+</html>

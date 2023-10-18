@@ -7,12 +7,12 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Thu, 17 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/linear-algebra/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>The Moore-Penrose Pseudoinverse</title>
-      <link>https://monte-cario.github.io/blog/pseudoinverse/</link>
+      <title>Linear Algebra and Numerical Computation</title>
+      <link>https://monte-cario.github.io/blog/la_nc/</link>
       <pubDate>Thu, 17 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://monte-cario.github.io/blog/pseudoinverse/</guid>
-      <description>Definition As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
+      <guid>https://monte-cario.github.io/blog/la_nc/</guid>
+      <description>The Moore-Penrose Pseudoinverse Definition As we learned in linear algebra, we can not inverse a matrix if it is not square. For example, if we want to solve the equation:
 $$ \boldsymbol{Ax=y} $$
 If the matrix \(\boldsymbol{A}\) is invertible then the solution is \(\boldsymbol{x = A^{-1}y}\). What if \(\boldsymbol{A}\) is not invertible, we can define the pseudoinverse of A as:
 $$ \boldsymbol{A^+ = \lim_{\delta\to 0}(A^{\top}A + \delta^2I)^{-1}A^{\top}} $$

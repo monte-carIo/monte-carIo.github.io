@@ -3,18 +3,24 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://monte-cario.github.io/blog/</loc>
-    <lastmod>2023-08-18T00:00:00+00:00</lastmod>
+    <lastmod>2023-10-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://monte-cario.github.io/blog/prob/</loc>
-    <lastmod>2023-08-18T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://monte-cario.github.io/blog/infor/</loc>
-    <lastmod>2023-08-18T00:00:00+00:00</lastmod>
+    <loc>https://monte-cario.github.io/blog/gans2/</loc>
+    <lastmod>2023-10-18T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://monte-cario.github.io/</loc>
+    <lastmod>2023-10-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://monte-cario.github.io/blog/jandh/</loc>
     <lastmod>2023-08-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://monte-cario.github.io/tags/probability-and-information-theory/</loc>
+    <loc>https://monte-cario.github.io/tags/ml-background/</loc>
+    <lastmod>2023-08-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://monte-cario.github.io/blog/pait/</loc>
+    <lastmod>2023-08-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://monte-cario.github.io/tags/probability-background/</loc>
     <lastmod>2023-08-18T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://monte-cario.github.io/tags/</loc>
@@ -23,8 +29,10 @@
     <loc>https://monte-cario.github.io/tags/linear-algebra/</loc>
     <lastmod>2023-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://monte-cario.github.io/blog/pseudoinverse/</loc>
+    <loc>https://monte-cario.github.io/blog/la_nc/</loc>
     <lastmod>2023-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://monte-cario.github.io/blog/deep-learning-2784a20bb0664cb998863d2c1c703e18/</loc>
   </url><url>
     <loc>https://monte-cario.github.io/categories/</loc>
   </url>

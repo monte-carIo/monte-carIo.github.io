@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage"><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="/fav_1.jpg">
+
+  <title>
+  GANs: Generative Adversarial Networks - Monte-Carlo
+  </title>
+  <meta name="description" content="This is a brief introduction and implementation of GANs through one of its variant form, that is DCGANs.
+What is DCGANs? GANs is basically a framework where we simultaneously train two models include a generator (use to simulate the data distribution) and a discriminator (use to distinguish a sample is from the data distribution or the generator). This can be consider as a minimax game, where we train D (discriminator) to maximize the probability of assigning the correct label to both training examples and samples from G (generator) and we simultaneously train G to minimize (z is a random noise): $$ min_G, max_D V(D, G) = E_{x \sim pdata(x)}[log D(x)] &#43; E_{z \sim p_z(z)}[log (1 - D(G(z)))] $$" />
+  <meta name="author" content="Monte Carlo" />
+  <meta name="generator" content="Hugo 0.111.1"><link
+    rel="stylesheet"
+    href="https://monte-cario.github.io/css/styles.min.562fdced95adc3893866f9334be234cb59d158855bf58add020eae7ba3aa0abe.css"
+    integrity="sha256-Vi/c7ZWtw4k4ZvkzS+I0y1nRWIVb9YrdAg6ue6OqCr4="
+  />
+  
+  
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
+      integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv"
+      crossorigin="anonymous"
+    >
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js"
+      integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O"
+      crossorigin="anonymous"
+    ></script>
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js"
+      integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script>
+  
+
+  <meta property="og:title" content="GANs: Generative Adversarial Networks" />
+<meta property="og:description" content="This is a brief introduction and implementation of GANs through one of its variant form, that is DCGANs.
+What is DCGANs? GANs is basically a framework where we simultaneously train two models include a generator (use to simulate the data distribution) and a discriminator (use to distinguish a sample is from the data distribution or the generator). This can be consider as a minimax game, where we train D (discriminator) to maximize the probability of assigning the correct label to both training examples and samples from G (generator) and we simultaneously train G to minimize (z is a random noise): $$ min_G, max_D V(D, G) = E_{x \sim pdata(x)}[log D(x)] &#43; E_{z \sim p_z(z)}[log (1 - D(G(z)))] $$" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://monte-cario.github.io/blog/gans2/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2023-10-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-10-18T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="GANs: Generative Adversarial Networks"/>
+<meta name="twitter:description" content="This is a brief introduction and implementation of GANs through one of its variant form, that is DCGANs.
+What is DCGANs? GANs is basically a framework where we simultaneously train two models include a generator (use to simulate the data distribution) and a discriminator (use to distinguish a sample is from the data distribution or the generator). This can be consider as a minimax game, where we train D (discriminator) to maximize the probability of assigning the correct label to both training examples and samples from G (generator) and we simultaneously train G to minimize (z is a random noise): $$ min_G, max_D V(D, G) = E_{x \sim pdata(x)}[log D(x)] &#43; E_{z \sim p_z(z)}[log (1 - D(G(z)))] $$"/>
+
+  <meta itemprop="name" content="GANs: Generative Adversarial Networks">
+<meta itemprop="description" content="This is a brief introduction and implementation of GANs through one of its variant form, that is DCGANs.
+What is DCGANs? GANs is basically a framework where we simultaneously train two models include a generator (use to simulate the data distribution) and a discriminator (use to distinguish a sample is from the data distribution or the generator). This can be consider as a minimax game, where we train D (discriminator) to maximize the probability of assigning the correct label to both training examples and samples from G (generator) and we simultaneously train G to minimize (z is a random noise): $$ min_G, max_D V(D, G) = E_{x \sim pdata(x)}[log D(x)] &#43; E_{z \sim p_z(z)}[log (1 - D(G(z)))] $$"><meta itemprop="datePublished" content="2023-10-18T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2023-10-18T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1139">
+<meta itemprop="keywords" content="" />
+
+  
+</head>
+<body class="dark:bg-gray-800 dark:text-white relative flex flex-col min-h-screen"><header class="container flex justify-between md:justify-between gap-4 flex-wrap p-6 mx-auto relative">
+  <a href="https://monte-cario.github.io/" class="capitalize font-extrabold text-2xl">
+    
+    <img src="/fav_1.jpg" alt="Monte-Carlo" class="h-8 max-w-full" />
+    
+  </a>
+  <button class="mobile-menu-button md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <line x1="4" y1="8" x2="20" y2="8" />
+      <line x1="4" y1="16" x2="20" y2="16" />
+    </svg>
+  </button>
+  <ul class="mobile-menu absolute z-10 px-6 pb-6 md:p-0 top-full left-0 w-full md:w-auto md:relative hidden md:flex flex-col md:flex-row items-end md:items-center gap-4 lg:gap-6 bg-white dark:bg-gray-800">
+
+    
+    <li><a href="/blog">Blog</a></li>
+    
+    <li><a href="/tags">Tags</a></li>
+    
+
+    
+
+    
+    <li class="grid place-items-center">
+      <span class="open-search inline-block cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <circle cx="10" cy="10" r="7" />
+          <line x1="21" y1="21" x2="15" y2="15" />
+        </svg>
+      </span>
+    </li>
+    
+
+    
+  </ul>
+</header>
+<main class="flex-1">
+  
+  
+
+  
+  <div class="relative max-w-5xl mx-auto px-4">
+    <img src="/pseudoinverse.png" class="rounded-lg shadow-sm w-full object-contain" />
+    
+    <div class="absolute top-4 right-8 rounded shadow bg-white text-gray-900 dark:bg-gray-900 dark:text-white px-2 py-0.5">
+      
+  
+    October 18, 2023
+  
+
+
+    </div>
+    
+  </div>
+  
+
+  <article class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4">
+
+    <h1 class="text-2xl font-bold mb-2">GANs: Generative Adversarial Networks</h1>
+    
+    <h5 class="text-sm flex items-center flex-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <rect x="4" y="5" width="16" height="16" rx="2" />
+        <line x1="16" y1="3" x2="16" y2="7" />
+        <line x1="8" y1="3" x2="8" y2="7" />
+        <line x1="4" y1="11" x2="20" y2="11" />
+        <rect x="8" y="15" width="2" height="2" />
+      </svg>
+      Posted on 
+  
+    October 18, 2023
+  
+
+
+      
+        &nbsp;&bull;&nbsp;
+      
+      <svg xmlns="http://www.w3.org/2000/svg" class="mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <circle cx="12" cy="12" r="9" />
+        <polyline points="12 7 12 12 15 15" />
+      </svg>
+      6&nbsp;minutes
+      &nbsp;&bull;
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+        <line x1="3" y1="6" x2="3" y2="19" />
+        <line x1="12" y1="6" x2="12" y2="19" />
+        <line x1="21" y1="6" x2="21" y2="19" />
+      </svg>
+      1139&nbsp;words
+      
+        
+      
+    </h5>
+    
+
+    <details id="TableOfContents" class="px-4 mt-4 bg-gray-100 dark:bg-gray-700 rounded toc">
+    <summary class="flex items-center font-bold py-2 px-4 cursor-pointer justify-between select-none text-black dark:text-white">
+      <span>Table of contents</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <polyline points="6 9 12 15 18 9"></polyline>
+     </svg>
+    </summary>
+
+    <ul class="mt-2 pb-4">
+        
+
+        
+        <li>
+        <a href="#what-is-dcgans">What is DCGANs?</a>
+        
+
+        
+        </li><li>
+        <a href="#transposed-convolutional-layer">Transposed convolutional layer</a>
+        
+
+        
+        <ul>
+            <li>
+        <a href="#padding-and-stride">Padding and Stride</a>
+        
+
+        
+        </li><li>
+        <a href="#relationship-with-cnn">Relationship with CNN</a>
+        
+
+        
+        </li></ul>
+      </li><li>
+        <a href="#generator-and-discriminator">Generator and Discriminator</a>
+        
+
+        
+        </li><li>
+        <a href="#traning-and-result">Traning and result</a>
+        </li></ul>
+  </details>
+
+    <p>This is a brief introduction and implementation of GANs through one of its variant form, that is <a href="https://arxiv.org/abs/1511.06434?source=post_page-----b665bbae3317--------------------------------" target="_blank" rel="noopener">DCGANs</a>
+.</p>
+<h2 id="what-is-dcgans">What is DCGANs?</h2>
+<ul>
+<li>GANs is basically a framework where we simultaneously train two models include a generator (use to simulate the data distribution) and a discriminator (use to distinguish a sample is from the data distribution or the generator). This can be consider as a minimax game, where we train D (discriminator) to maximize the probability of assigning the correct label to both training examples and samples from G (generator) and we simultaneously train G to minimize  (z is a random noise):</li>
+</ul>
+<p>$$
+min_G, max_D V(D, G) = E_{x \sim pdata(x)}[log D(x)] + E_{z \sim p_z(z)}[log (1 - D(G(z)))]
+$$</p>
+<ul>
+<li>DCGANs have the basic like GANs but there are some additions features, that they use 2 main layers are convolutional layer and transposed convolutional layer.</li>
+<li>Our goal is to find how to implement with pytorch and CIFAR10 data set.</li>
+</ul>
+<h2 id="transposed-convolutional-layer">Transposed convolutional layer</h2>
+<p>Instead of reduce (downsample) the spatial dimensions (height and width) of the input like CNN, transposed convolutional layer is another type of CNN layers that can increase (upsample) the spatial dimensions of intermediate feature maps.</p>
+<h3 id="padding-and-stride">Padding and Stride</h3>
+<ul>
+<li>Different from in the regular convolution where padding is applied to input, it is applied to output in the transposed convolution.</li>
+<li>In the transposed convolution, strides are specified for intermediate results (thus output), not for input.</li>
+</ul>
+<p>In this example, with the input of 2x2 and kernel 2x2 (stride = 2 and no padding) the output gonna be 3x3 matrix.</p>
+<p><img src="/TCL.png" alt="Untitled"></p>
+<p>From the above example we can formulize the output of a kernel by:</p>
+<p>$$
+O_h=\left(I_h-1\right) \times s_h+K_h-2 p \\ O_w=\left(I_w-1\right) \times s_w+K_h-2 p
+$$</p>
+<p>Compare to the formula of CNN:</p>
+<p>$$
+O_h=\frac{(I_h-K_h + 2 p)}{s_h} + 1 \\ O_w=\frac{(I_w-K_w + 2 p)}{s_w} + 1
+$$</p>
+<p>where \(O_h \times O_w\), \(I_h \times I_w\)\(K_h \times K_w\)\(s_h \times s_w\) and \(p\) are the shape of output, input, kernel, stride and padding respectively.</p>
+<h3 id="relationship-with-cnn">Relationship with CNN</h3>
+<p>Then consider a 1D Convolutional layer interm of matrix multiplication \(\vec{x}*\vec{a} = X\vec{a}\)</p>
+<p>$$
+\begin{matrix}
+x &amp; y &amp; x &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; x &amp; y &amp; x &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; x &amp; y &amp; x &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; x &amp; y &amp; x
+\end{matrix}
+\begin{bmatrix}
+0 \\
+a \\
+b \\
+c \\
+d \\
+0
+\end{bmatrix}
+= \begin{bmatrix}
+ay + bz \\
+ax + by + cz \\
+b x+c y+d z \\
+c x+d y
+\end{bmatrix}
+$$</p>
+<p>Consider with a 1D Transposed Convolutional layer with input \([x,y]\), kernel \([x,y,x]\) then the output gonna be \([ax,ay+bx,az+by+cx, bz+cy+dx,cz+dy,dz]\).</p>
+<p>An 1D Transposed Convolutional matrix multiplies by the transpose of the same matrix \(\vec{x}*^{\top}\vec{a} = X^{\top} \vec{a}\) :</p>
+<p>$$
+\begin{bmatrix}
+x &amp; 0 &amp; 0 &amp; 0 \\
+y &amp; x &amp; 0 &amp; 0 \\
+z &amp; y &amp; x &amp; 0 \\
+0 &amp; z &amp; y &amp; x \\
+0 &amp; 0 &amp; z &amp; y \\
+0 &amp; 0 &amp; 0 &amp; z
+\end{bmatrix}\begin{bmatrix}
+a \\
+b \\
+c \\
+d
+\end{bmatrix}\begin{bmatrix}
+a x \\
+a y+b x \\
+a z+b y+c x \\
+b z+c y+d x \\
+c z+d y \\
+d z
+\end{bmatrix}
+$$</p>
+<p>With the same result, now we can know where the name come from.</p>
+<h2 id="generator-and-discriminator">Generator and Discriminator</h2>
+<p>The generator&rsquo;s role is to create fake data that is intended to resemble real data from the target domain. In the case of image generation, for example, the generator takes random noise as input and transforms it into data samples, such as images, that ideally look like they were drawn from the same distribution as the real data. The generator tries to improve its ability to generate realistic data as the training process continues. Building the architechture may have some problem that came along like <a href="https://distill.pub/2016/deconv-checkerboard/" target="_blank" rel="noopener">checkerboard</a>
+ effect. This can be handled by choosing the approriate kernel size and stride. For example, kernel is 2x2 and stride is 2.</p>
+<p>The generator contains layers of transposed convolution. This is an example of a architechture:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>Layer (<span style="color:#8be9fd;font-style:italic">type</span>)                   Output Shape
+</span></span><span style="display:flex;"><span>ConvTranspose2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>              [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">512</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>]         
+</span></span><span style="display:flex;"><span>BatchNorm2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">2</span>                  [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">512</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>]           
+</span></span><span style="display:flex;"><span>ReLU<span style="color:#ff79c6">-</span><span style="color:#bd93f9">3</span>                         [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">512</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>]              
+</span></span><span style="display:flex;"><span>ConvTranspose2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">4</span>              [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">256</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">4</span>]       
+</span></span><span style="display:flex;"><span>BatchNorm2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">5</span>                  [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">256</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">4</span>]             
+</span></span><span style="display:flex;"><span>ReLU<span style="color:#ff79c6">-</span><span style="color:#bd93f9">6</span>                         [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">256</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">4</span>]              
+</span></span><span style="display:flex;"><span>ConvTranspose2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">7</span>              [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">128</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">8</span>]         
+</span></span><span style="display:flex;"><span>BatchNorm2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>                  [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">128</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">8</span>]             
+</span></span><span style="display:flex;"><span>ReLU<span style="color:#ff79c6">-</span><span style="color:#bd93f9">9</span>                         [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">128</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">8</span>]               
+</span></span><span style="display:flex;"><span>ConvTranspose2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">10</span>             [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">64</span>, <span style="color:#bd93f9">16</span>, <span style="color:#bd93f9">16</span>]         
+</span></span><span style="display:flex;"><span>BatchNorm2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">11</span>                 [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">64</span>, <span style="color:#bd93f9">16</span>, <span style="color:#bd93f9">16</span>]             
+</span></span><span style="display:flex;"><span>ReLU<span style="color:#ff79c6">-</span><span style="color:#bd93f9">12</span>                        [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">64</span>, <span style="color:#bd93f9">16</span>, <span style="color:#bd93f9">16</span>]              
+</span></span><span style="display:flex;"><span>ConvTranspose2d<span style="color:#ff79c6">-</span><span style="color:#bd93f9">13</span>             [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">32</span>, <span style="color:#bd93f9">32</span>]           
+</span></span><span style="display:flex;"><span>Tanh<span style="color:#ff79c6">-</span><span style="color:#bd93f9">14</span>                        [<span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">32</span>, <span style="color:#bd93f9">32</span>]
+</span></span></code></pre></div><p>where the input is 512x2x2 and the output is 3x32x32.</p>
+<p>The discriminator, on the other hand, acts as a critic. It evaluates data samples and tries to distinguish between real data and fake data produced by the generator. The discriminator&rsquo;s objective is to become better at discriminating real data from the synthetic data generated by the generator. This is a classic picture classification model that can be solve by CNN.</p>
+<p>The GAN training process involves a dynamic competition between the generator and the discriminator. The generator continually refines its output to try to fool the discriminator, while the discriminator becomes more skilled at telling real data from generated data. This adversarial training process continues until the generator produces data that is indistinguishable from real data or until a desired level of quality is reached.</p>
+<p>If one of the components of a GAN, either the generator or the discriminator, &ldquo;loses control&rdquo; in the context of training, it can lead to issues during the training process or suboptimal results.</p>
+<p>If generator losing control:</p>
+<ul>
+<li>If the generator becomes too dominant and produces data that is too similar to real data too quickly, the discriminator might struggle to differentiate between real and fake data.</li>
+<li>In this scenario, the discriminator&rsquo;s loss function may become very small, indicating that it&rsquo;s having a hard time discriminating, and the generator&rsquo;s loss function may not be effective in guiding the training process.</li>
+<li>This can result in a generator that generates data that doesn&rsquo;t exhibit the desired level of diversity, creativity, or realism.</li>
+</ul>
+<p>If discriminator losing control:</p>
+<ul>
+<li>If the discriminator becomes too dominant and consistently distinguishes between real and fake data with very high confidence, the generator may struggle to improve its output.</li>
+<li>In such cases, the generator&rsquo;s loss function may be very high, indicating that it&rsquo;s finding it challenging to generate data that can deceive the discriminator.</li>
+<li>The generator may produce output that is far from resembling the desired target distribution.</li>
+</ul>
+<h2 id="traning-and-result">Traning and result</h2>
+<p>With the input is CIFAR10 (32x32x3)</p>
+<p><img src="/CIFAR1O.png" alt="Untitled"></p>
+<p>After the process of training and testing architechture. We have some interesting result.</p>
+<p><img src="/results_gans.png" alt="Untitled"></p>
+<p>From left to right is the result of 3 different architechtures, where the first 2 have <a href="https://distill.pub/2016/deconv-checkerboard/" target="_blank" rel="noopener">checkboard</a>
+ effect and third one does not after applied some method to avoid that and have some significant result.</p>
+
+  </article>
+<div class="px-2 mb-2">
+  
+  <script src="https://giscus.app/client.js"
+    data-repo=""
+    data-repo-id=""
+    data-category=""
+    data-category-id=""
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+  </script>
+  
+</div>
+<div class="bg-gray-200 dark:bg-gray-900">
+  <div class="container px-4 py-12 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+    <div>
+      <div class="text-2xl font-bold mb-2">Follow me</div>
+      <p class="opacity-60"></p>
+    </div>
+
+    <ul class="flex justify-center gap-x-3 flex-wrap gap-y-2">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://github.com/monte-carIo"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
+            />
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+      <li>
+        <a
+          href="https://www.facebook.com/profile.php?id=100005815337178"
+          target="_blank"
+          rel="noopener"
+          aria-label="Facebook"
+          class="p-1 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-facebook" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"></path>
+          </svg>
+        </a>
+      </li>
+      
+
+      
+
+      
+    </ul>
+  </div>
+</div>
+
+    </main><footer class="container p-6 mx-auto flex justify-between items-center">
+  <span class="text-sm font-light">
+    
+    Copyright © 2023 - Do Pham Khai Nguyen · All rights reserved
+    
+  </span>
+  <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-1 cursor-pointer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5"
+      stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M18 15l-6 -6l-6 6h12" />
+    </svg>
+  </span>
+</footer>
+
+<div class="search-ui absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 hidden">
+  <div class="container max-w-3xl mx-auto p-12">
+    <div class="relative">
+      <div class="my-4 text-center text-2xl font-bold">Search</div>
+
+      <span class="p-2 absolute right-0 top-0 cursor-pointer close-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </span>
+    </div>
+
+    <input type="search" class="py-2 px-3 w-full dark:text-black border dark:border-transparent"
+      placeholder="Enter search query" />
+
+    <div class="search-results text-lg font-medium my-4 hidden">Results</div>
+    <ul class="search-list my-2">
+
+    </ul>
+
+    <div class="no-results text-center my-8 hidden">
+      <div class="text-xl font-semibold mb-2">No results found</div>
+      <p class="font-light text-sm">Try adjusting your search query</p>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script src="https://monte-cario.github.io/js/scripts.min.js"></script>
+
+
+
+
+
+
+
+<script>
+  const mobileMenuButton = document.querySelector('.mobile-menu-button')
+  const mobileMenu = document.querySelector('.mobile-menu')
+  function toggleMenu() {
+    mobileMenu.classList.toggle('hidden');
+    mobileMenu.classList.toggle('flex');
+  }
+  if(mobileMenu && mobileMenuButton){
+    mobileMenuButton.addEventListener('click', toggleMenu)
+  }
+</script>
+</body>
+</html>

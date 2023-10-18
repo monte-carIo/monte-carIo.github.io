@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ML Background on Monte-Carlo</title>
+    <link>https://monte-cario.github.io/tags/ml-background/</link>
+    <description>Recent content in ML Background on Monte-Carlo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 18 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/ml-background/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Machine Learning Basics</title>
+      <link>https://monte-cario.github.io/blog/jandh/</link>
+      <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://monte-cario.github.io/blog/jandh/</guid>
+      <description>Estimators and Bias Point Estimation Point estimation is the attempt to provide the single “best” prediction of some quantity of interest. In general, the quantity of interest can be a single parameter or a vector of parameters in some parametric model, it can also be a whole function.
+We take the frequentist perspective on statistics. That is, we assume that the true parameter value \(\theta\) is fixed but unknown, while the point estimate \(\hat \theta\) is a function of the data.</description>
+    </item>
+    
+  </channel>
+</rss>

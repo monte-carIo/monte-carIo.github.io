@@ -7,11 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Fri, 18 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Probability and Information Theory</title>
-      <link>https://monte-cario.github.io/tags/probability-and-information-theory/</link>
+      <title>ML Background</title>
+      <link>https://monte-cario.github.io/tags/ml-background/</link>
       <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://monte-cario.github.io/tags/probability-and-information-theory/</guid>
+      <guid>https://monte-cario.github.io/tags/ml-background/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Probability background</title>
+      <link>https://monte-cario.github.io/tags/probability-background/</link>
+      <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://monte-cario.github.io/tags/probability-background/</guid>
       <description></description>
     </item>
     

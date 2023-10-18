@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Probability background on Monte-Carlo</title>
+    <link>https://monte-cario.github.io/tags/probability-background/</link>
+    <description>Recent content in Probability background on Monte-Carlo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 18 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://monte-cario.github.io/tags/probability-background/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Probability and Information Theory</title>
+      <link>https://monte-cario.github.io/blog/pait/</link>
+      <pubDate>Fri, 18 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://monte-cario.github.io/blog/pait/</guid>
+      <description>Information theory Intuition The basic intuition behind information theory is that learning that an unlikely event has occurred is more informative than learning that a likely event has occurred. A message saying “the sun rose this morning” is so uninformative as to be unnecessary to send, but a message saying “there was a solar eclipse this morning” is very informative.
+Independent events should have additive information. For example, the information gained from the event that a tossed coin has come up as heads twice is double than the event a tossed coin has come up as heads once.</description>
+    </item>
+    
+  </channel>
+</rss>
